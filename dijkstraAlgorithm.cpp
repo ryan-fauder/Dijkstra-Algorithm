@@ -10,13 +10,14 @@ void DijsktraAlgorithm(AdjacencyList list, int source, std::vector<int> & distan
   // A List with all the path
   int current_weight, weight;
   int current_vertice, vertice;
+
+  std::vector<bool> wasVisited;
   Heap min_heap;
 
   // Creating distance and parent;
   distance.resize(size, INF);
-  parent.resize(size);
-  for (int i = 0; i < size; i++) parent[i] = i;
-  
+  parent.resize(size, -1);
+  wasVisited.resize(size, 0);
 
   min_heap.push(createVertice(0, source));
 
@@ -28,8 +29,9 @@ void DijsktraAlgorithm(AdjacencyList list, int source, std::vector<int> & distan
 
     min_heap.pop();
     
-    if(parent[vertice] != vertice && vertice != source) continue;
-
+    if(wasVisited[vertice] == 1) continue;
+    else wasVisited[vertice] = 1;
+    
     for(auto current : list[vertice])
     {
       current_weight = current.first;
@@ -46,32 +48,45 @@ void DijsktraAlgorithm(AdjacencyList list, int source, std::vector<int> & distan
 
 AdjacencyList createAdjacencyList(int qtt_vertices){
   AdjacencyList list;
-  list.reserve(qtt_vertices);
+  list.resize(qtt_vertices);
   for (int i = 0; i < qtt_vertices; i++)
   {
     list[i].reserve(qtt_vertices);
   }
+  
   return list;
 }
 
 void printVertice(Vertice vertice){
-  std::cout << "( W:" << vertice.first << ", V:" << vertice.second << " )" << std::endl;
+  std::cout << "(W:" << vertice.first << ", V:" << vertice.second << ")";
 }
 
 void printAdjacencyList(AdjacencyList list){
   int size = list.size();
+
+  std::cout << size << std::endl;
   for (int row = 0; row < size; row++)
   {
-    std::cout << row << ": " << std::endl;
-    for (int column = 0; column < list[row].size(); row++)
+    std::cout << row << ": ";
+    for (int column = 0; column < list[row].size(); column++)
+    {
       printVertice(list[row][column]);
+      std::cout << " ; ";
+    }
+    std::cout << std::endl;
   }
-  
+  std::cout << std::endl;
 }
 
 void insertVertice(AdjacencyList & list, int first, int second, int weight){
-  list[first].push_back(createVertice(weight, first));
-  list[second].push_back(createVertice(weight, second));
+  int size = list[first].size();
+  list[first].resize(size++);
+  
+  size = list[second].size();
+  list[second].resize(size++);
+  
+  list[first].push_back(createVertice(weight, second));
+  list[second].push_back(createVertice(weight, first));
 }
 
 Vertice createVertice(int weight, int vertice){
