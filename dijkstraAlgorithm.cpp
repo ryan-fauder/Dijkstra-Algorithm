@@ -15,8 +15,14 @@ void DijsktraAlgorithm(AdjacencyList list, int source, std::vector<int> & distan
   Heap min_heap;
 
   // Creating distance and parent;
+  /*
+  
   distance.resize(size, INF);
   parent.resize(size, -1);
+
+  */
+  fill(distance.begin(), distance.end(), INF);
+  fill(parent.begin(), parent.end(), -1);
   wasVisited.resize(size, 0);
 
   min_heap.push(createVertice(0, source));
@@ -49,11 +55,6 @@ void DijsktraAlgorithm(AdjacencyList list, int source, std::vector<int> & distan
 AdjacencyList createAdjacencyList(int qtt_vertices){
   AdjacencyList list;
   list.resize(qtt_vertices);
-  for (int i = 0; i < qtt_vertices; i++)
-  {
-    list[i].reserve(qtt_vertices);
-  }
-  
   return list;
 }
 
@@ -79,12 +80,6 @@ void printAdjacencyList(AdjacencyList list){
 }
 
 void insertVertice(AdjacencyList & list, int first, int second, int weight){
-  int size = list[first].size();
-  list[first].resize(size++);
-  
-  size = list[second].size();
-  list[second].resize(size++);
-  
   list[first].push_back(createVertice(weight, second));
   list[second].push_back(createVertice(weight, first));
 }
@@ -94,3 +89,95 @@ Vertice createVertice(int weight, int vertice){
   v = std::make_pair(weight, vertice);
   return v;
 }
+
+/*
+
+void DijsktraAlgorithm(AdjacencyList list, int source, std::vector<int> & distance, std::vector <int> & parent){
+  int size = list.size();
+  // distance from source
+  // A List with all the path
+  int current_weight, weight;
+  int current_vertice, vertice;
+
+  Heap min_heap;
+
+  // Creating distance and parent;
+  //distance.resize(size, INF);
+  //parent.resize(size, -1);
+
+  fill(distance.begin(), distance.end(), INF);
+  fill(parent.begin(), parent.end(), -1);
+
+  min_heap.push(createVertice(0, source));
+
+  distance[source] = 0;
+
+  while (!min_heap.empty()){
+    weight = min_heap.top().first;
+    vertice = min_heap.top().second;
+
+    min_heap.pop();
+    
+    if(weight > distance[vertice]) continue;
+    
+    for(auto current : list[vertice])
+    {
+      current_weight = current.first;
+      current_vertice = current.second;
+      // It's current vertice that "vertice" is connected.
+      if(current_weight + weight < distance[current_vertice] && current_vertice != source){
+        distance[current_vertice] = current_weight + weight;
+        min_heap.push(createVertice(distance[current_vertice], current_vertice));
+        parent[current_vertice] = vertice;
+      }
+    }
+  }
+}
+
+*/
+
+/*
+void DijsktraAlgorithm(AdjacencyList list, int source, int destination, std::vector<int> & distance, std::vector <int> & parent){
+  int size = list.size();
+  // distance from source
+  // A List with all the path
+  int current_weight, weight;
+  int current_vertice, vertice;
+
+  std::vector<bool> wasVisited;
+  Heap min_heap;
+
+  // Creating distance and parent;
+  fill(distance.begin(), distance.end(), INF);
+  fill(parent.begin(), parent.end(), -1);
+  wasVisited.resize(size, 0);
+
+  min_heap.push(createVertice(0, source));
+
+  distance[source] = 0;
+
+  while (!min_heap.empty()){
+    weight = min_heap.top().first;
+    vertice = min_heap.top().second;
+
+    min_heap.pop();
+    
+    if(vertice == destination) return;
+
+    if(wasVisited[vertice] == 1) continue;
+    else wasVisited[vertice] = 1;
+    
+    for(auto current : list[vertice])
+    {
+      current_weight = current.first;
+      current_vertice = current.second;
+      // It's current vertice that "vertice" is connected.
+      if(current_weight + weight < distance[current_vertice] && wasVisited[current_vertice] == 0){
+        distance[current_vertice] = current_weight + weight;
+        min_heap.push(createVertice(distance[current_vertice], current_vertice));
+        parent[current_vertice] = vertice;
+      }
+    }
+  }
+}
+*/
